@@ -24,7 +24,6 @@ namespace Vend.App.Model
 
         public VendingMachineViewModel(int inventory, dynamic price)
         {
-
             canRack = new CanRack(inventory);
             purchasePrice = new PurchasePrice(price);
             trxBox = new CoinBox();
