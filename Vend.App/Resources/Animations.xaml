@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Storyboard x:Key="sbHideAnimation">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="1"
+            To="1"
+            Duration="0:0:3" />
+        <DoubleAnimation
+            BeginTime="0:0:3"
+            DecelerationRatio=".5"
+            Storyboard.TargetProperty="Opacity"
+            From="1"
+            To="0"
+            Duration="0:0:2" />
+    </Storyboard>
+</ResourceDictionary>
