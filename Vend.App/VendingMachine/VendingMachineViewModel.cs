@@ -20,6 +20,10 @@ namespace Vend.App.Model
         private string title;
         private string uiMessage;
         private BitmapImage imgSoda;
+        private bool canMakeChange;
+
+
+
 
         public VendingMachineViewModel(int inventory, dynamic price)
         {
@@ -27,8 +31,9 @@ namespace Vend.App.Model
             purchasePrice = new PurchasePrice(price);
             trxBox = new CoinBox();
             box = new CoinBox();
-            title = $"Price of soda is {this.purchasePrice.Price}";
+            title = $"Please deposit ${this.purchasePrice.Price} cents";
             MainTitle = "WPF Vending Machine - Assignment 7";
+            canMakeChange = true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -42,17 +47,16 @@ namespace Vend.App.Model
             this.OnReturnCoins); } }
         public ICommand EjectCanCommand { get { return new RelayCommand(e => true, this.OnEjectCan); } }
 
-        public BitmapImage ImgSoda
+
+        public bool CanMakeChange
         {
-            get => imgSoda;
+            get { return canMakeChange; }
             set
             {
-                imgSoda = value;
-                OnPropertyChanged("ImgSoda");
+                canMakeChange = value;
+                OnPropertyChanged("CanMakeChange");
             }
         }
-
-
 
         public CanRack CanRack
         {
@@ -106,33 +110,53 @@ namespace Vend.App.Model
                 OnPropertyChanged();
             }
         }
+
+        public BitmapImage ImgSoda
+        {
+            get => imgSoda;
+            set
+            {
+                imgSoda = value;
+                OnPropertyChanged("ImgSoda");
+            }
+        }
+
         private void OnDeposit(object obj)
         {
             TrxBox.Deposit(new Coin((Denomination)obj));
+            this.CanMakeChange = TrxBox.CanMakeChange(PurchasePrice.Price);
         }
 
         private void OnEjectCan(object flavor)
         {
-            if (IsAmountSufficient())
+            if (this.canMakeChange)
             {
-                var f = (FlavorOps.ToFlavor(flavor.ToString()));
-                if (!canRack.IsEmpty(f))
+                if (IsAmountSufficient())
                 {
-                    canRack.RemoveACanOf(f);
-                    trxBox.Transfer(box, purchasePrice.Price);
-                    BitmapImage img = new BitmapImage();
-                    img.BeginInit();
-                    img.UriSource = new Uri($"/Images/{flavor.ToString().ToLower()}.jpg", UriKind.Relative);
-                    img.Rotation = Rotation.Rotate270;
-                    img.EndInit();
+                    var f = (FlavorOps.ToFlavor(flavor.ToString()));
+                    if (!canRack.IsEmpty(f))
+                    {
+                        canRack.RemoveACanOf(f);
+                        trxBox.Transfer(box, purchasePrice.Price);
+                        BitmapImage img = new BitmapImage();
+                        img.BeginInit();
+                        img.UriSource = new Uri($"/Images/{flavor.ToString().ToLower()}.jpg", UriKind.Relative);
+                        img.Rotation = Rotation.Rotate270;
+                        img.EndInit();
 
-                    this.ImgSoda = img;
-                    this.UiMessage = $"Here is your {f} soda";
+                        this.ImgSoda = img;
+                        this.UiMessage = $"Here is your {f} soda";
+                    }
+                }
+                else
+                {
+                    this.UiMessage = $"Please deposit {(this.purchasePrice.Price - this.trxBox.ValueOf)} more cents";
                 }
             }
             else
             {
-                this.UiMessage = $"Please deposit {(this.purchasePrice.Price - this.trxBox.ValueOf)} more cents!";
+                this.UiMessage = $"Exact change required. Eject coins and try again";
+
             }
         }
 
@@ -146,6 +170,7 @@ namespace Vend.App.Model
                 trxBox.Withdraw(coin.CoinEnumeral);
             }
             this.UiMessage = $"Here's you refund of ${refund}";
+            this.CanMakeChange = true;
         }
 
         public bool IsAmountSufficient()

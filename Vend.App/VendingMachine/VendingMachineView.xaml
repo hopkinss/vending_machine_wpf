@@ -24,6 +24,7 @@
         </Grid.RowDefinitions>
         <Grid.Resources>
             <local:CanInventoryConverter x:Key="CanInventoryConverter" />
+            <local:ExactChangeIndicatorConverter x:Key="ExactChangeIndicatorConverter" />
         </Grid.Resources>
         <!--  heading  -->
         <Grid>
@@ -31,13 +32,17 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
             <!--  user messages  -->
             <msg:NotificationView Grid.ColumnSpan="2" />
 
             <!--  counters for transaction coinbox and vending machine coin box  -->
             <StackPanel Grid.Column="1" Orientation="Vertical">
-                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <StackPanel VerticalAlignment="Center" 
+                            Orientation="Horizontal">
                     <Label Content="Revenue: $" Foreground="{StaticResource fgAltTextTheme}" />
                     <Label
                         HorizontalAlignment="Center"
@@ -49,16 +54,24 @@
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Orientation="Horizontal">
-                    <TextBlock Foreground="{StaticResource fgAltTextTheme}" Text="Deposited: $" />
-                    <TextBlock Foreground="{StaticResource fgAltTextTheme}" Text="{Binding TrxBox.ValueOf}" />
+                    <Label Foreground="{StaticResource fgAltTextTheme}" Content="Deposited: $" />
+                    <Label Foreground="{StaticResource fgAltTextTheme}" Content="{Binding TrxBox.ValueOf}" />
                 </StackPanel>
-                <!--<TextBlock x:Name="textBlockExactChangeRequired" Grid.Column="0" 
-                           Text="{Binding MainCoinBox.CanMakeChange, 
-                           Converter={StaticResource ExactChangeIndicatorConverter}}" 
-                           Margin="10,0,0,0" Foreground="#FFF50F0F"/>-->
             </StackPanel>
-        </Grid>
+            <StackPanel
+                Grid.Row="1"
+                Margin="10,0,0,0"
+                Orientation="Horizontal">
+                <Rectangle
+                    Width="15"
+                    Height="15"
+                    Fill="{Binding CanMakeChange, Converter={StaticResource ExactChangeIndicatorConverter}, NotifyOnTargetUpdated=True}"
+                    RadiusX="10"
+                    RadiusY="10" />
+                <Label Content="Exact change required when lit" Foreground="SlateGray" />
+            </StackPanel>
 
+        </Grid>
 
         <!--  Cans  -->
         <Grid Grid.Row="1">
@@ -105,7 +118,7 @@
                     <Image Height="150" Source="/Images/regular.jpg" />
                     <Label
                         HorizontalAlignment="Center"
-                        Content="{Binding CanRack.CansOfRegular, Converter={StaticResource CanInventoryConverter},NotifyOnTargetUpdated=True}"
+                        Content="{Binding CanRack.CansOfRegular, Converter={StaticResource CanInventoryConverter}, NotifyOnTargetUpdated=True}"
                         Foreground="{StaticResource fgAltTextTheme}" />
                 </StackPanel>
             </Button>
@@ -159,7 +172,7 @@
                 Style="{StaticResource EjectButton}">
                 <TextBlock
                     Width="50"
-                    Text="Push to Eject"
+                    Text="Coin Return"
                     TextAlignment="Center"
                     TextWrapping="Wrap" />
             </Button>

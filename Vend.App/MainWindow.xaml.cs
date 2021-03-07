@@ -20,7 +20,7 @@ namespace Vend.App
 
     public partial class MainWindow : Window
     {
-        private VendingMachineViewModel vm = new VendingMachineViewModel(3, 50);
+        private VendingMachineViewModel vm = new VendingMachineViewModel(3, 55);
 
         public MainWindow()
         {

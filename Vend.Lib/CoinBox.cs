@@ -27,11 +27,7 @@ namespace Vend.Lib
             Box.AddRange(SeedMoney);
         }
 
-        public void Deposit(Coin Acoin)
-        {
-            Box.Add(Acoin);
-            OnPropertyChanged("ValueOf");
-        }
+
         public List<Coin> Box
         {
             get => box;
@@ -39,18 +35,6 @@ namespace Vend.Lib
             {
                 box = value;
             }
-        }
-
-        public bool Withdraw(Denomination ACoinDenomination)
-        {
-            var coinToRemove = this.Box.FirstOrDefault(x => x.CoinEnumeral == ACoinDenomination);
-            if (coinToRemove != null)
-            {
-                this.Box.Remove(coinToRemove);
-                OnPropertyChanged("ValueOf");
-                return true;
-            }
-            return false;
         }
 
         public int HalfDollarCount
@@ -73,12 +57,6 @@ namespace Vend.Lib
         {
             get { return CoinCount(Denomination.SLUG); }
         }
-
-        public int CoinCount(Denomination denomination)
-        {
-            return this.Box.Where(x => x.CoinEnumeral == denomination).Count();
-        }
-
         public decimal ValueOf
         {
             get { return this.Box.Sum(x => x.ValueOf); }
@@ -95,6 +73,28 @@ namespace Vend.Lib
             }
         }
 
+        public int CoinCount(Denomination denomination)
+        {
+            return this.Box.Where(x => x.CoinEnumeral == denomination).Count();
+        }
+
+        public void Deposit(Coin Acoin)
+        {
+            Box.Add(Acoin);
+            OnPropertyChanged("ValueOf");
+        }
+        public bool Withdraw(Denomination ACoinDenomination)
+        {
+            var coinToRemove = this.Box.FirstOrDefault(x => x.CoinEnumeral == ACoinDenomination);
+            if (coinToRemove != null)
+            {
+                this.Box.Remove(coinToRemove);
+                OnPropertyChanged("ValueOf");
+                return true;
+            }
+            return false;
+        }
+
         public void Transfer(CoinBox destination,int price)
         {
             foreach (var c in MakePurchase(destination,price))
@@ -105,19 +105,20 @@ namespace Vend.Lib
 
         public List<Coin> MakePurchase( CoinBox destination, int price)
         {
-            return ProcessPayment(destination,price).ToList();
+            return ProcessPayment(price).ToList();
         }
 
-        public IEnumerable<Coin> ProcessPayment( CoinBox destination, int price)
+        public IEnumerable<Coin> ProcessPayment(int price)
         {
             var remainder = Math.Abs(price);
-            var returnedCoins = new List<Coin>();
             while (remainder > 0)
             {
                 foreach (var d in Enum.GetValues(typeof(Denomination)).Cast<Denomination>().Where(x => (int)x > 0).Reverse())
                 {
+                    
                     while ((int)d <= remainder)
                     {
+                        
                         var coinToRemove = this.Box.Where(x => x.CoinEnumeral == d).FirstOrDefault();
                         if (coinToRemove != null)
                         {
@@ -126,10 +127,44 @@ namespace Vend.Lib
                             yield return new Coin(d);
                         }
                         else
-                            break;
+                            break;                            
                     }
                 }
             }
+        }
+
+        public bool CanMakeChange(int price)
+        {
+            var remainder = Math.Abs(price);
+            var coins = this.box.Select(x => x).ToList();
+
+            int counter = 0;
+            while (remainder > 0)
+            {
+                foreach (var d in Enum.GetValues(typeof(Denomination)).Cast<Denomination>().Where(x => (int)x > 0).Reverse())
+                {
+                    
+                    while ((int)d <= remainder)
+                    {
+                        var coinToRemove = coins.Where(x => x.CoinEnumeral == d).FirstOrDefault();
+                        if (coinToRemove != null)
+                        {
+                            coins.Remove(coinToRemove);
+                            remainder -= (int)d;
+                        }
+                        else
+                        {
+                            if (counter > 1)
+                                return false;
+                            counter++;
+                            break;
+                        }
+                        if (coins.Count == 0)
+                            return true;
+                    }
+                }
+            }
+            return true;
         }
     }
 }
