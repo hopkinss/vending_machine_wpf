@@ -15,6 +15,7 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    
     <Grid Background="{StaticResource bgMainBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -58,6 +59,8 @@
                     <Label Foreground="{StaticResource fgAltTextTheme}" Content="{Binding TrxBox.ValueOf}" />
                 </StackPanel>
             </StackPanel>
+            
+            <!--Exact change notification-->
             <StackPanel
                 Grid.Row="1"
                 Margin="10,0,0,0"
@@ -70,7 +73,6 @@
                     RadiusY="10" />
                 <Label Content="Exact change required when lit" Foreground="SlateGray" />
             </StackPanel>
-
         </Grid>
 
         <!--  Cans  -->

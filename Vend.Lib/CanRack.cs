@@ -162,8 +162,6 @@ namespace Vend.Lib
 
     }
 
-   
-
     public class CanInventory
     {
         public CanInventory(int amount,Can can)

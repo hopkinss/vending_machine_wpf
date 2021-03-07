@@ -12,7 +12,7 @@
     mc:Ignorable="d">
     <StackPanel Orientation="Vertical">
         <Label Content="" Foreground="{StaticResource fgTextTheme}" />
-        <Label Content="{Binding Title}" Foreground="{StaticResource fgTextTheme}" />
+        <Label Content="{Binding CanPriceMessage}" Foreground="{StaticResource fgTextTheme}" />
         <TextBlock Foreground="{StaticResource fgTextTheme}" Text="{Binding UiMessage, NotifyOnTargetUpdated=True}">
             <TextBlock.Triggers>
                 <EventTrigger RoutedEvent="Binding.TargetUpdated">
@@ -22,14 +22,14 @@
                                 Storyboard.TargetProperty="Opacity"
                                 From="1"
                                 To="1"
-                                Duration="0:0:1" />
+                                Duration="0:0:3" />
                             <DoubleAnimation
                                 BeginTime="0:0:1"
                                 DecelerationRatio=".5"
                                 Storyboard.TargetProperty="Opacity"
                                 From="1"
                                 To="0"
-                                Duration="0:0:1" />
+                                Duration="0:0:3" />
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>

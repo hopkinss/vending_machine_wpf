@@ -17,13 +17,10 @@ namespace Vend.App.Model
         private CanRack canRack;
         private CoinBox trxBox;
         private CoinBox box;
-        private string title;
+        private string canPriceMessage;
         private string uiMessage;
         private BitmapImage imgSoda;
         private bool canMakeChange;
-
-
-
 
         public VendingMachineViewModel(int inventory, dynamic price)
         {
@@ -31,7 +28,7 @@ namespace Vend.App.Model
             purchasePrice = new PurchasePrice(price);
             trxBox = new CoinBox();
             box = new CoinBox();
-            title = $"Please deposit ${this.purchasePrice.Price} cents";
+            canPriceMessage = $"Please deposit ${this.purchasePrice.Price} cents";
             MainTitle = "WPF Vending Machine - Assignment 7";
             canMakeChange = true;
         }
@@ -76,6 +73,7 @@ namespace Vend.App.Model
             set { purchasePrice = value; }
         }
 
+        // Coinbox for current transaction
         public CoinBox TrxBox
         {
             get { return trxBox; }
@@ -85,22 +83,26 @@ namespace Vend.App.Model
             }
         }
 
+        // Vending machines permanent coinbox
         public CoinBox Box
         {
             get { return box; }
             set { box = value; }
         }
-
+        
+        // Title for the Window
         public string MainTitle { get; set; }
-        public string Title
+      
+        public string CanPriceMessage
         {
-            get { return title; }
+            get { return canPriceMessage; }
             set
             {
-                title = value;
+                canPriceMessage = value;
             }
         }
 
+        // Message to display to user about transaction as animation
         public string UiMessage
         {
             get { return uiMessage; }
@@ -111,6 +113,7 @@ namespace Vend.App.Model
             }
         }
 
+        // Can dispensed to user as animation
         public BitmapImage ImgSoda
         {
             get => imgSoda;
@@ -146,6 +149,10 @@ namespace Vend.App.Model
 
                         this.ImgSoda = img;
                         this.UiMessage = $"Here is your {f} soda";
+                    }
+                    else
+                    {
+                        this.uiMessage = $"Sorry, we are out of {f}";
                     }
                 }
                 else
