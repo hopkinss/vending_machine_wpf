@@ -17,7 +17,6 @@ namespace Vend.App.Model
         private CanRack canRack;
         private CoinBox trxBox;
         private CoinBox box;
-        private int balance;
         private string title;
         private string uiMessage;
         private BitmapImage imgSoda;
@@ -30,11 +29,7 @@ namespace Vend.App.Model
             box = new CoinBox();
             title = $"Price of soda is {this.purchasePrice.Price}";
             MainTitle = "WPF Vending Machine - Assignment 7";
-
         }
-
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -47,51 +42,17 @@ namespace Vend.App.Model
             this.OnReturnCoins); } }
         public ICommand EjectCanCommand { get { return new RelayCommand(e => true, this.OnEjectCan); } }
 
-
-        private void OnDeposit(object obj)
-        {            
-            TrxBox.Deposit(new Coin((Denomination)obj));
-        }
-
-        private void OnEjectCan(object flavor)
+        public BitmapImage ImgSoda
         {
-            if (IsAmountSufficient())
+            get => imgSoda;
+            set
             {
-                var f = (FlavorOps.ToFlavor(flavor.ToString()));
-                if (!canRack.IsEmpty(f))
-                {
-                    canRack.RemoveACanOf(f);
-                    Transfer(Box);
-                    BitmapImage img = new BitmapImage();
-                    img.BeginInit();
-                    img.UriSource = new Uri($"/Images/{flavor.ToString().ToLower()}.jpg", UriKind.Relative);
-                    img.Rotation = Rotation.Rotate270;
-                    img.EndInit();
-
-                    this.ImgSoda = img;
-                    this.UiMessage = $"Here is your {f} soda";
-
-                }
-            }
-            else
-            {
-                this.UiMessage = $"Please deposit {(this.purchasePrice.Price - this.trxBox.ValueOf)} more cents!";
+                imgSoda = value;
+                OnPropertyChanged("ImgSoda");
             }
         }
 
 
-
-        private void OnReturnCoins(object obj)
-        {
-            var refund = 0M;
-            while (this.trxBox.ValueOf > 0)
-            {
-                var coin = this.trxBox.Box.LastOrDefault();
-                refund += coin.ValueOf;
-                trxBox.Withdraw(coin.CoinEnumeral);
-            }
-            this.UiMessage = $"Here's you refund of ${refund}";
-        }
 
         public CanRack CanRack
         {
@@ -125,15 +86,7 @@ namespace Vend.App.Model
             get { return box; }
             set { box = value; }
         }
-        public void Transfer(CoinBox destination)
-        {
 
-            var test = MakePurchase();
-            foreach (var c in test)
-            {
-                destination.Deposit(c);
-            }
-        }
         public string MainTitle { get; set; }
         public string Title
         {
@@ -153,64 +106,51 @@ namespace Vend.App.Model
                 OnPropertyChanged();
             }
         }
-        public BitmapImage ImgSoda
+        private void OnDeposit(object obj)
         {
-            get => imgSoda;
-            set
+            TrxBox.Deposit(new Coin((Denomination)obj));
+        }
+
+        private void OnEjectCan(object flavor)
+        {
+            if (IsAmountSufficient())
             {
-                imgSoda = value;
-                OnPropertyChanged("ImgSoda");
+                var f = (FlavorOps.ToFlavor(flavor.ToString()));
+                if (!canRack.IsEmpty(f))
+                {
+                    canRack.RemoveACanOf(f);
+                    trxBox.Transfer(box, purchasePrice.Price);
+                    BitmapImage img = new BitmapImage();
+                    img.BeginInit();
+                    img.UriSource = new Uri($"/Images/{flavor.ToString().ToLower()}.jpg", UriKind.Relative);
+                    img.Rotation = Rotation.Rotate270;
+                    img.EndInit();
+
+                    this.ImgSoda = img;
+                    this.UiMessage = $"Here is your {f} soda";
+                }
+            }
+            else
+            {
+                this.UiMessage = $"Please deposit {(this.purchasePrice.Price - this.trxBox.ValueOf)} more cents!";
             }
         }
-        public int Balance
+
+        private void OnReturnCoins(object obj)
         {
-            get { return balance; }
-            set
+            var refund = 0M;
+            while (this.trxBox.ValueOf > 0)
             {
-                balance = value;
+                var coin = this.trxBox.Box.LastOrDefault();
+                refund += coin.ValueOf;
+                trxBox.Withdraw(coin.CoinEnumeral);
             }
+            this.UiMessage = $"Here's you refund of ${refund}";
         }
 
         public bool IsAmountSufficient()
         {
             return trxBox.Box.Sum(x => x.ValueOf) >= purchasePrice.Price;
-        }
-
-        private void SetBalance()
-        {
-            this.balance = purchasePrice.Price - (int)trxBox.Box.Sum(x => x.ValueOf);
-        }
-
-        public List<Coin> MakePurchase()
-        {
-            return ProcessPayment(PurchasePrice.Price).ToList();
-        }
-
-
-        public IEnumerable<Coin> ProcessPayment(int amount)
-        {
-            var remainder = Math.Abs(amount);
-            var returnedCoins = new List<Coin>();
-            while (remainder > 0)
-            {
-                foreach (var d in Enum.GetValues(typeof(Denomination)).Cast<Denomination>().Where(x => (int)x > 0).Reverse())
-                {
-                    while ((int)d <= remainder)
-                    {
-
-                        var coinToRemove = trxBox.Box.Where(x => x.CoinEnumeral == d).FirstOrDefault();
-                        if (coinToRemove != null)
-                        {
-                            remainder -= (int)d;
-                            trxBox.Withdraw(coinToRemove.CoinEnumeral);
-                            SetBalance();
-                            yield return new Coin(d);
-                        }
-                        else
-                            break;
-                    }
-                }
-            }
         }
     }
 }

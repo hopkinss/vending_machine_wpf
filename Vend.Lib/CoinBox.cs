@@ -95,5 +95,41 @@ namespace Vend.Lib
             }
         }
 
+        public void Transfer(CoinBox destination,int price)
+        {
+            foreach (var c in MakePurchase(destination,price))
+            {
+                destination.Deposit(c);
+            }
+        }
+
+        public List<Coin> MakePurchase( CoinBox destination, int price)
+        {
+            return ProcessPayment(destination,price).ToList();
+        }
+
+        public IEnumerable<Coin> ProcessPayment( CoinBox destination, int price)
+        {
+            var remainder = Math.Abs(price);
+            var returnedCoins = new List<Coin>();
+            while (remainder > 0)
+            {
+                foreach (var d in Enum.GetValues(typeof(Denomination)).Cast<Denomination>().Where(x => (int)x > 0).Reverse())
+                {
+                    while ((int)d <= remainder)
+                    {
+                        var coinToRemove = this.Box.Where(x => x.CoinEnumeral == d).FirstOrDefault();
+                        if (coinToRemove != null)
+                        {
+                            remainder -= (int)d;
+                            this.Withdraw(coinToRemove.CoinEnumeral);
+                            yield return new Coin(d);
+                        }
+                        else
+                            break;
+                    }
+                }
+            }
+        }
     }
 }

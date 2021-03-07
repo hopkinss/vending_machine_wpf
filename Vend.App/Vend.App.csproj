@@ -68,19 +68,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CanRack\CanRackView.xaml.cs">
-      <DependentUpon>CanRackView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CanRack\CanRackViewModel.cs" />
     <Compile Include="Notifications\NotificationView.xaml.cs">
       <DependentUpon>NotificationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Notifications\NotificationViewModel.cs" />
     <Compile Include="RelayCommands.cs" />
-    <Page Include="CanRack\CanRackView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -114,6 +106,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="VendingMachine\CanInventoryConverter.cs" />
+    <Compile Include="VendingMachine\ExactChangeIndicatorConverter.cs" />
     <Compile Include="VendingMachine\VendingMachineView.xaml.cs">
       <DependentUpon>VendingMachineView.xaml</DependentUpon>
     </Compile>

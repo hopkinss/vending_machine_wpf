@@ -22,7 +22,9 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-
+        <Grid.Resources>
+            <local:CanInventoryConverter x:Key="CanInventoryConverter" />
+        </Grid.Resources>
         <!--  heading  -->
         <Grid>
             <Grid.ColumnDefinitions>
@@ -50,6 +52,10 @@
                     <TextBlock Foreground="{StaticResource fgAltTextTheme}" Text="Deposited: $" />
                     <TextBlock Foreground="{StaticResource fgAltTextTheme}" Text="{Binding TrxBox.ValueOf}" />
                 </StackPanel>
+                <!--<TextBlock x:Name="textBlockExactChangeRequired" Grid.Column="0" 
+                           Text="{Binding MainCoinBox.CanMakeChange, 
+                           Converter={StaticResource ExactChangeIndicatorConverter}}" 
+                           Margin="10,0,0,0" Foreground="#FFF50F0F"/>-->
             </StackPanel>
         </Grid>
 
@@ -70,7 +76,7 @@
                     <Image Height="150" Source="/Images/orange.jpg" />
                     <Label
                         HorizontalAlignment="Center"
-                        Content="{Binding CanRack.CansOfOrange, NotifyOnTargetUpdated=True}"
+                        Content="{Binding CanRack.CansOfOrange, Converter={StaticResource CanInventoryConverter}, NotifyOnTargetUpdated=True}"
                         Foreground="{StaticResource fgAltTextTheme}" />
                 </StackPanel>
             </Button>
@@ -85,7 +91,7 @@
                     <Image Height="150" Source="/Images/lemon.jpg" />
                     <Label
                         HorizontalAlignment="Center"
-                        Content="{Binding CanRack.CansOfLemon, NotifyOnTargetUpdated=True}"
+                        Content="{Binding CanRack.CansOfLemon, Converter={StaticResource CanInventoryConverter}, NotifyOnTargetUpdated=True}"
                         Foreground="{StaticResource fgAltTextTheme}" />
                 </StackPanel>
             </Button>
@@ -99,7 +105,7 @@
                     <Image Height="150" Source="/Images/regular.jpg" />
                     <Label
                         HorizontalAlignment="Center"
-                        Content="{Binding CanRack.CansOfRegular, NotifyOnTargetUpdated=True}"
+                        Content="{Binding CanRack.CansOfRegular, Converter={StaticResource CanInventoryConverter},NotifyOnTargetUpdated=True}"
                         Foreground="{StaticResource fgAltTextTheme}" />
                 </StackPanel>
             </Button>
@@ -107,7 +113,6 @@
 
         <!--  Coins  -->
         <Grid Grid.Row="2" Margin="20,0,20,0">
-
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
