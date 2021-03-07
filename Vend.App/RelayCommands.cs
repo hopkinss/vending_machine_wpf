@@ -24,6 +24,8 @@ namespace Vend.App
             remove => CommandManager.RequerySuggested -= value;
         }
 
+
+
         public bool CanExecute(object parameter)
         {
             return _canExecute(parameter);
@@ -33,5 +35,6 @@ namespace Vend.App
         {
             _execute(parameter);
         }
+
     }
 }

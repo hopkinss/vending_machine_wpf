@@ -30,7 +30,11 @@ namespace Vend.App.Model
             box = new CoinBox();
             title = $"Price of soda is {this.purchasePrice.Price}";
             MainTitle = "WPF Vending Machine - Assignment 7";
+
         }
+
+
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -39,8 +43,15 @@ namespace Vend.App.Model
         }
 
         public ICommand DepositCommand { get { return new RelayCommand(e => true, this.OnDeposit); } }
-        public ICommand ReturnCoinsCommand { get { return new RelayCommand(e => true, this.OnReturnCoins); } }
+        public ICommand ReturnCoinsCommand { get { return new RelayCommand(e => this.trxBox.ValueOf>0, 
+            this.OnReturnCoins); } }
         public ICommand EjectCanCommand { get { return new RelayCommand(e => true, this.OnEjectCan); } }
+
+
+        private void OnDeposit(object obj)
+        {            
+            TrxBox.Deposit(new Coin((Denomination)obj));
+        }
 
         private void OnEjectCan(object flavor)
         {
@@ -68,10 +79,7 @@ namespace Vend.App.Model
             }
         }
 
-        private void OnDeposit(object obj)
-        {
-            TrxBox.Deposit(new Coin((Denomination)obj));
-        }
+
 
         private void OnReturnCoins(object obj)
         {

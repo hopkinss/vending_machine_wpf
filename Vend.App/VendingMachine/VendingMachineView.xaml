@@ -9,6 +9,7 @@
     xmlns:lib="clr-namespace:Vend.Lib;assembly=Vend.Lib"
     xmlns:local="clr-namespace:Vend.App.VendingMachine"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:msg="clr-namespace:Vend.App.Notifications"
     xmlns:root="clr-namespace:Vend.App"
     xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
     d:DesignHeight="450"
@@ -28,33 +29,11 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.ColumnSpan="2" Orientation="Vertical">
-                <Label Content="" Foreground="{StaticResource fgTextTheme}" />
-                <Label Content="{Binding Title}" Foreground="{StaticResource fgTextTheme}" />
-                <TextBlock Foreground="{StaticResource fgTextTheme}" Text="{Binding UiMessage, NotifyOnTargetUpdated=True}">
-                    <TextBlock.Triggers>
-                        <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation
-                                        Storyboard.TargetProperty="Opacity"
-                                        From="1"
-                                        To="1"
-                                        Duration="0:0:3" />
-                                    <DoubleAnimation
-                                        BeginTime="0:0:3"
-                                        DecelerationRatio=".5"
-                                        Storyboard.TargetProperty="Opacity"
-                                        From="1"
-                                        To="0"
-                                        Duration="0:0:2" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </TextBlock.Triggers>
-                </TextBlock>
-            </StackPanel>
 
+            <!--  user messages  -->
+            <msg:NotificationView Grid.ColumnSpan="2" />
+
+            <!--  counters for transaction coinbox and vending machine coin box  -->
             <StackPanel Grid.Column="1" Orientation="Vertical">
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <Label Content="Revenue: $" Foreground="{StaticResource fgAltTextTheme}" />
@@ -196,10 +175,10 @@
                                 Storyboard.TargetProperty="Opacity"
                                 From="1"
                                 To="1"
-                                Duration="0:0:3" />
+                                Duration="0:0:2" />
                             <DoubleAnimation
-                                BeginTime="0:0:3"
-                                DecelerationRatio=".5"
+                                BeginTime="0:0:2"
+                                DecelerationRatio=".2"
                                 Storyboard.TargetProperty="Opacity"
                                 From="1"
                                 To="0"
