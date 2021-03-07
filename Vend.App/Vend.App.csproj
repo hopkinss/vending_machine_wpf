@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="VendingMachine\CanInventoryConverter.cs" />
+    <Compile Include="VendingMachine\DecimalDisplayConverter.cs" />
     <Compile Include="VendingMachine\ExactChangeIndicatorConverter.cs" />
     <Compile Include="VendingMachine\VendingMachineView.xaml.cs">
       <DependentUpon>VendingMachineView.xaml</DependentUpon>
@@ -155,9 +156,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\test.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icon1.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="w.ico" />

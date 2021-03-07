@@ -15,17 +15,18 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    
+
     <Grid Background="{StaticResource bgMainBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.Resources>
             <local:CanInventoryConverter x:Key="CanInventoryConverter" />
             <local:ExactChangeIndicatorConverter x:Key="ExactChangeIndicatorConverter" />
+            <local:DecimalDisplayConverter x:Key="DecimalDisplayConverter"/>
         </Grid.Resources>
         <!--  heading  -->
         <Grid>
@@ -37,30 +38,28 @@
                 <RowDefinition />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <!--  user messages  -->
-            <msg:NotificationView Grid.ColumnSpan="2" />
+
+            <!--  Title  -->
+            <Label
+                Content="{Binding CanPriceMessage}"
+                ContentStringFormat="Vending Machine 06:  {0}"
+                FontSize="15"
+                Foreground="{StaticResource fgTextTheme}" />
 
             <!--  counters for transaction coinbox and vending machine coin box  -->
             <StackPanel Grid.Column="1" Orientation="Vertical">
-                <StackPanel VerticalAlignment="Center" 
-                            Orientation="Horizontal">
-                    <Label Content="Revenue: $" Foreground="{StaticResource fgAltTextTheme}" />
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <Label
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
-                        Content="{Binding Path=Box.ValueOf}"
-                        Foreground="{StaticResource fgAltTextTheme}" />
+                        Content="{Binding Path=Box.ValueOf,Converter={StaticResource DecimalDisplayConverter}}"
+                        ContentStringFormat="Total Revenue {0}"
+                        Foreground="{StaticResource fgSubduedMsgTextTheme}" />
                 </StackPanel>
-                <StackPanel
-                    Grid.Column="1"
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal">
-                    <Label Foreground="{StaticResource fgAltTextTheme}" Content="Deposited: $" />
-                    <Label Foreground="{StaticResource fgAltTextTheme}" Content="{Binding TrxBox.ValueOf}" />
-                </StackPanel>
+
             </StackPanel>
-            
-            <!--Exact change notification-->
+
+            <!--  Exact change notification  -->
             <StackPanel
                 Grid.Row="1"
                 Margin="10,0,0,0"
@@ -71,11 +70,11 @@
                     Fill="{Binding CanMakeChange, Converter={StaticResource ExactChangeIndicatorConverter}, NotifyOnTargetUpdated=True}"
                     RadiusX="10"
                     RadiusY="10" />
-                <Label Content="Exact change required when lit" Foreground="SlateGray" />
+                <Label Content="Exact change required when lit" Foreground="{StaticResource fgSubduedMsgTextTheme}" />
             </StackPanel>
         </Grid>
 
-        <!--  Cans  -->
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -83,7 +82,17 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <!--  user messages  -->
+            <msg:NotificationView Grid.ColumnSpan="3" />
+
+            <!--  Cans  -->
             <Button
+                Grid.Row="1"
                 Command="{Binding EjectCanCommand}"
                 CommandParameter="{x:Static lib:Flavor.Orange}"
                 Style="{StaticResource CanButton}">
@@ -92,12 +101,11 @@
                     <Label
                         HorizontalAlignment="Center"
                         Content="{Binding CanRack.CansOfOrange, Converter={StaticResource CanInventoryConverter}, NotifyOnTargetUpdated=True}"
-                        Foreground="{StaticResource fgAltTextTheme}" />
+                        Foreground="{StaticResource fgSubduedMsgTextTheme}" />
                 </StackPanel>
             </Button>
-
-
             <Button
+                Grid.Row="1"
                 Grid.Column="1"
                 Command="{Binding EjectCanCommand}"
                 CommandParameter="{x:Static lib:Flavor.Lemon}"
@@ -107,11 +115,11 @@
                     <Label
                         HorizontalAlignment="Center"
                         Content="{Binding CanRack.CansOfLemon, Converter={StaticResource CanInventoryConverter}, NotifyOnTargetUpdated=True}"
-                        Foreground="{StaticResource fgAltTextTheme}" />
+                        Foreground="{StaticResource fgSubduedMsgTextTheme}" />
                 </StackPanel>
             </Button>
-
             <Button
+                Grid.Row="1"
                 Grid.Column="2"
                 Command="{Binding EjectCanCommand}"
                 CommandParameter="{x:Static lib:Flavor.Regular}"
@@ -121,13 +129,14 @@
                     <Label
                         HorizontalAlignment="Center"
                         Content="{Binding CanRack.CansOfRegular, Converter={StaticResource CanInventoryConverter}, NotifyOnTargetUpdated=True}"
-                        Foreground="{StaticResource fgAltTextTheme}" />
+                        Foreground="{StaticResource fgSubduedMsgTextTheme}" />
                 </StackPanel>
             </Button>
+
         </Grid>
 
         <!--  Coins  -->
-        <Grid Grid.Row="2" Margin="20,0,20,0">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -140,44 +149,62 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Button
-                Command="{Binding DepositCommand}"
-                CommandParameter="{x:Static lib:Denomination.NICKEL}"
-                Content="5"
-                Style="{StaticResource CoinButton}" />
+            <telerik:GroupBox
+                Grid.ColumnSpan="5"
+                Margin="0,0,10,0"
+                Padding="15,0,15,0"
+                
+                HorizontalAlignment="Center"
+                Foreground="{StaticResource fgTextTheme}"
+                BorderBrush="{StaticResource fgSubduedMsgTextTheme}"
+                Header="Deposit Coins">
+                <StackPanel Margin="20,0,20,0" Orientation="Horizontal">
+                    <Button
+                        Command="{Binding DepositCommand}"
+                        CommandParameter="{x:Static lib:Denomination.NICKEL}"
+                        Content="5"
+                        Style="{StaticResource CoinButton}" />
 
-            <Button
-                Grid.Column="1"
-                Command="{Binding DepositCommand}"
-                CommandParameter="{x:Static lib:Denomination.DIME}"
-                Content="10"
-                Style="{StaticResource CoinButton}" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding DepositCommand}"
+                        CommandParameter="{x:Static lib:Denomination.DIME}"
+                        Content="10"
+                        Style="{StaticResource CoinButton}" />
 
-            <Button
-                Grid.Column="2"
-                Command="{Binding DepositCommand}"
-                CommandParameter="{x:Static lib:Denomination.QUARTER}"
-                Content="25"
-                Style="{StaticResource CoinButton}" />
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding DepositCommand}"
+                        CommandParameter="{x:Static lib:Denomination.QUARTER}"
+                        Content="25"
+                        Style="{StaticResource CoinButton}" />
 
-            <Button
-                Grid.Column="3"
-                Command="{Binding DepositCommand}"
-                CommandParameter="{x:Static lib:Denomination.HALFDOLLAR}"
-                Content="50"
-                Style="{StaticResource CoinButton}" />
+                    <Button
+                        Grid.Column="3"
+                        Command="{Binding DepositCommand}"
+                        CommandParameter="{x:Static lib:Denomination.HALFDOLLAR}"
+                        Content="50"
+                        Style="{StaticResource CoinButton}" />
 
-            <Button
-                Grid.Column="4"
-                Margin="20,0,0,0"
-                Command="{Binding ReturnCoinsCommand}"
-                Style="{StaticResource EjectButton}">
-                <TextBlock
-                    Width="50"
-                    Text="Coin Return"
-                    TextAlignment="Center"
-                    TextWrapping="Wrap" />
-            </Button>
+                    <Button
+                        Grid.Column="4"
+                        Margin="20,0,0,0"
+                        Command="{Binding ReturnCoinsCommand}"
+                        Style="{StaticResource EjectButton}">
+                        <StackPanel>
+                            <TextBlock
+                                Width="60"
+                                Text="Coin Return"
+                                TextAlignment="Center"
+                                TextWrapping="Wrap" />
+                            <Label Content="{Binding TrxBox.ValueOf,Converter={StaticResource DecimalDisplayConverter}}" 
+                                   HorizontalAlignment="Center"
+                                   Foreground="{StaticResource fgAltTextTheme}" />
+             
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </telerik:GroupBox>
         </Grid>
 
         <!--  dispensed soda  -->

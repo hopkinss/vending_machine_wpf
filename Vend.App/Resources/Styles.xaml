@@ -30,7 +30,7 @@
         <Setter Property="Background" Value="Black" />
         <Setter Property="Margin" Value="0,5,2,5" />
         <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="MediumPurple" />
+        <Setter Property="BorderBrush" Value="SlateGray"  />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Style.Resources>
@@ -42,7 +42,7 @@
 
     <Style x:Key="EjectButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="Black" />
-        <Setter Property="BorderBrush" Value="LightYellow" />
+        <Setter Property="BorderBrush" Value="SlateGray" />
         <Setter Property="Foreground" Value="White" />
 
         <Style.Resources>

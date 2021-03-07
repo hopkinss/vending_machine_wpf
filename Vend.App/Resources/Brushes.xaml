@@ -1,5 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <SolidColorBrush x:Key="fgTextTheme" Color="White" />
-    <SolidColorBrush x:Key="fgAltTextTheme" Color="Lime" />
+    <SolidColorBrush x:Key="fgAltTextTheme" Color="Blue" />
     <SolidColorBrush x:Key="bgMainBrush" Color="Black"/>
+    <SolidColorBrush x:Key="fgMsgTextTheme" Color="Red"/>
+    <SolidColorBrush x:Key="fgSubduedMsgTextTheme" Color="SlateGray"/>
 </ResourceDictionary>

@@ -28,8 +28,8 @@ namespace Vend.App.Model
             purchasePrice = new PurchasePrice(price);
             trxBox = new CoinBox();
             box = new CoinBox();
-            canPriceMessage = $"Please deposit ${this.purchasePrice.Price} cents";
-            MainTitle = "WPF Vending Machine - Assignment 7";
+            canPriceMessage = $"Please deposit {(this.purchasePrice.Price * .01).ToString("C2")}";
+            MainTitle = "WPF Vending Machine - Assignment 6";
             canMakeChange = true;
         }
 
@@ -157,7 +157,8 @@ namespace Vend.App.Model
                 }
                 else
                 {
-                    this.UiMessage = $"Please deposit {(this.purchasePrice.Price - this.trxBox.ValueOf)} more cents";
+              
+                    this.UiMessage = $"Please deposit an additional {((this.purchasePrice.Price - Convert.ToInt32(this.trxBox.ValueOf)) * .01).ToString("C2")}";
                 }
             }
             else
@@ -176,7 +177,7 @@ namespace Vend.App.Model
                 refund += coin.ValueOf;
                 trxBox.Withdraw(coin.CoinEnumeral);
             }
-            this.UiMessage = $"Here's you refund of ${refund}";
+            this.UiMessage = $"Here's you refund of {(Convert.ToInt32(refund)*.01).ToString("C2")}";
             this.CanMakeChange = true;
         }
 
