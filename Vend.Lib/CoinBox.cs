@@ -135,10 +135,14 @@ namespace Vend.Lib
 
         public bool CanMakeChange(int price)
         {
+            if (this.ValueOf < price) 
+                return true;
+
             var remainder = Math.Abs(price);
             var coins = this.box.Select(x => x).ToList();
 
             int counter = 0;
+
             while (remainder > 0)
             {
                 foreach (var d in Enum.GetValues(typeof(Denomination)).Cast<Denomination>().Where(x => (int)x > 0).Reverse())
