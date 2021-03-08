@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -148,27 +147,40 @@ namespace Vend.App.Model
                         img.EndInit();
 
                         this.ImgSoda = img;
-                        this.UiMessage = $"Here is your {f} soda";
+
+                        var refundMsg = string.Empty;
+
+                        if (this.trxBox.Box.Count>0)
+                        {
+                           refundMsg = $" and {((Convert.ToInt32(RefundCoins())*.01).ToString("C2"))} change";
+                        }
+      
+                        this.UiMessage = $"Here is your {f} soda{refundMsg}";
                     }
                     else
                     {
-                        this.uiMessage = $"Sorry, we are out of {f}";
+                        this.UiMessage = $"Sorry, we are out of {f}";
                     }
                 }
                 else
-                {
-              
+                {              
                     this.UiMessage = $"Please deposit an additional {((this.purchasePrice.Price - Convert.ToInt32(this.trxBox.ValueOf)) * .01).ToString("C2")}";
                 }
             }
             else
             {
                 this.UiMessage = $"Exact change required. Eject coins and try again";
-
             }
         }
 
         private void OnReturnCoins(object obj)
+        {
+            var refund = RefundCoins();
+            this.UiMessage = $"Here's you refund of {(Convert.ToInt32(refund)*.01).ToString("C2")}";
+            this.CanMakeChange = true;
+        }
+
+        private decimal RefundCoins()
         {
             var refund = 0M;
             while (this.trxBox.ValueOf > 0)
@@ -177,8 +189,7 @@ namespace Vend.App.Model
                 refund += coin.ValueOf;
                 trxBox.Withdraw(coin.CoinEnumeral);
             }
-            this.UiMessage = $"Here's you refund of {(Convert.ToInt32(refund)*.01).ToString("C2")}";
-            this.CanMakeChange = true;
+            return refund;
         }
 
         public bool IsAmountSufficient()

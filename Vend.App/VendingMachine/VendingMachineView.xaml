@@ -26,18 +26,14 @@
         <Grid.Resources>
             <local:CanInventoryConverter x:Key="CanInventoryConverter" />
             <local:ExactChangeIndicatorConverter x:Key="ExactChangeIndicatorConverter" />
-            <local:DecimalDisplayConverter x:Key="DecimalDisplayConverter"/>
+            <local:DecimalDisplayConverter x:Key="DecimalDisplayConverter" />
         </Grid.Resources>
-        <!--  heading  -->
-        <Grid>
+
+        <Grid Margin="0,5,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
 
             <!--  Title  -->
             <Label
@@ -46,31 +42,16 @@
                 FontSize="15"
                 Foreground="{StaticResource fgTextTheme}" />
 
-            <!--  counters for transaction coinbox and vending machine coin box  -->
+            <!--  counter to see the total amount in the permanent vending machine coin box  -->
             <StackPanel Grid.Column="1" Orientation="Vertical">
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <Label
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
-                        Content="{Binding Path=Box.ValueOf,Converter={StaticResource DecimalDisplayConverter}}"
+                        Content="{Binding Path=Box.ValueOf, Converter={StaticResource DecimalDisplayConverter}}"
                         ContentStringFormat="Total Revenue {0}"
                         Foreground="{StaticResource fgSubduedMsgTextTheme}" />
                 </StackPanel>
-
-            </StackPanel>
-
-            <!--  Exact change notification  -->
-            <StackPanel
-                Grid.Row="1"
-                Margin="10,0,0,0"
-                Orientation="Horizontal">
-                <Rectangle
-                    Width="15"
-                    Height="15"
-                    Fill="{Binding CanMakeChange, Converter={StaticResource ExactChangeIndicatorConverter}, NotifyOnTargetUpdated=True}"
-                    RadiusX="10"
-                    RadiusY="10" />
-                <Label Content="Exact change required when lit" Foreground="{StaticResource fgSubduedMsgTextTheme}" />
             </StackPanel>
         </Grid>
 
@@ -132,7 +113,6 @@
                         Foreground="{StaticResource fgSubduedMsgTextTheme}" />
                 </StackPanel>
             </Button>
-
         </Grid>
 
         <!--  Coins  -->
@@ -153,56 +133,70 @@
                 Grid.ColumnSpan="5"
                 Margin="0,0,10,0"
                 Padding="15,0,15,0"
-                
                 HorizontalAlignment="Center"
-                Foreground="{StaticResource fgTextTheme}"
                 BorderBrush="{StaticResource fgSubduedMsgTextTheme}"
+                Foreground="{StaticResource fgTextTheme}"
                 Header="Deposit Coins">
-                <StackPanel Margin="20,0,20,0" Orientation="Horizontal">
-                    <Button
-                        Command="{Binding DepositCommand}"
-                        CommandParameter="{x:Static lib:Denomination.NICKEL}"
-                        Content="5"
-                        Style="{StaticResource CoinButton}" />
+                <StackPanel>
+                    <StackPanel Margin="20,0,20,0" Orientation="Horizontal">
+                        <Button
+                            Command="{Binding DepositCommand}"
+                            CommandParameter="{x:Static lib:Denomination.NICKEL}"
+                            Content="5"
+                            Style="{StaticResource CoinButton}" />
 
-                    <Button
-                        Grid.Column="1"
-                        Command="{Binding DepositCommand}"
-                        CommandParameter="{x:Static lib:Denomination.DIME}"
-                        Content="10"
-                        Style="{StaticResource CoinButton}" />
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding DepositCommand}"
+                            CommandParameter="{x:Static lib:Denomination.DIME}"
+                            Content="10"
+                            Style="{StaticResource CoinButton}" />
 
-                    <Button
-                        Grid.Column="2"
-                        Command="{Binding DepositCommand}"
-                        CommandParameter="{x:Static lib:Denomination.QUARTER}"
-                        Content="25"
-                        Style="{StaticResource CoinButton}" />
+                        <Button
+                            Grid.Column="2"
+                            Command="{Binding DepositCommand}"
+                            CommandParameter="{x:Static lib:Denomination.QUARTER}"
+                            Content="25"
+                            Style="{StaticResource CoinButton}" />
 
-                    <Button
-                        Grid.Column="3"
-                        Command="{Binding DepositCommand}"
-                        CommandParameter="{x:Static lib:Denomination.HALFDOLLAR}"
-                        Content="50"
-                        Style="{StaticResource CoinButton}" />
+                        <Button
+                            Grid.Column="3"
+                            Command="{Binding DepositCommand}"
+                            CommandParameter="{x:Static lib:Denomination.HALFDOLLAR}"
+                            Content="50"
+                            Style="{StaticResource CoinButton}" />
 
-                    <Button
-                        Grid.Column="4"
-                        Margin="20,0,0,0"
-                        Command="{Binding ReturnCoinsCommand}"
-                        Style="{StaticResource EjectButton}">
-                        <StackPanel>
-                            <TextBlock
-                                Width="60"
-                                Text="Coin Return"
-                                TextAlignment="Center"
-                                TextWrapping="Wrap" />
-                            <Label Content="{Binding TrxBox.ValueOf,Converter={StaticResource DecimalDisplayConverter}}" 
-                                   HorizontalAlignment="Center"
-                                   Foreground="{StaticResource fgAltTextTheme}" />
-             
-                        </StackPanel>
-                    </Button>
+                        <Button
+                            Grid.Column="4"
+                            Margin="20,0,0,0"
+                            Command="{Binding ReturnCoinsCommand}"
+                            Style="{StaticResource EjectButton}">
+                            <StackPanel>
+                                <TextBlock
+                                    Width="60"
+                                    Text="Coin Return"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap" />
+                                <Label
+                                    HorizontalAlignment="Center"
+                                    Content="{Binding TrxBox.ValueOf, Converter={StaticResource DecimalDisplayConverter}}"
+                                    Foreground="{StaticResource fgAltTextTheme}" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <!--Exact change indicator-->
+                    <StackPanel
+                        Grid.Row="1"
+                        Margin="10,0,0,0"
+                        Orientation="Horizontal">
+                        <Rectangle
+                            Width="15"
+                            Height="15"
+                            Fill="{Binding CanMakeChange, Converter={StaticResource ExactChangeIndicatorConverter}, NotifyOnTargetUpdated=True}"
+                            RadiusX="10"
+                            RadiusY="10" />
+                        <Label Content="Exact change required when lit" Foreground="{StaticResource fgSubduedMsgTextTheme}" />
+                    </StackPanel>
                 </StackPanel>
             </telerik:GroupBox>
         </Grid>

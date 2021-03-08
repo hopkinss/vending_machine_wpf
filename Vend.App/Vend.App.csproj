@@ -152,12 +152,6 @@
     <Resource Include="Images\regular.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\regular1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\test.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="w.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -105,20 +105,18 @@ namespace Vend.Lib
 
         public List<Coin> MakePurchase( CoinBox destination, int price)
         {
-            return ProcessPayment(price).ToList();
+            return RemoveCoinDenomination(price).ToList();
         }
 
-        public IEnumerable<Coin> ProcessPayment(int price)
+        public IEnumerable<Coin> RemoveCoinDenomination(int price)
         {
             var remainder = Math.Abs(price);
             while (remainder > 0)
             {
                 foreach (var d in Enum.GetValues(typeof(Denomination)).Cast<Denomination>().Where(x => (int)x > 0).Reverse())
-                {
-                    
+                {                    
                     while ((int)d <= remainder)
-                    {
-                        
+                    {                        
                         var coinToRemove = this.Box.Where(x => x.CoinEnumeral == d).FirstOrDefault();
                         if (coinToRemove != null)
                         {
@@ -141,13 +139,10 @@ namespace Vend.Lib
             var remainder = Math.Abs(price);
             var coins = this.box.Select(x => x).ToList();
 
-            int counter = 0;
-
             while (remainder > 0)
             {
                 foreach (var d in Enum.GetValues(typeof(Denomination)).Cast<Denomination>().Where(x => (int)x > 0).Reverse())
                 {
-                    
                     while ((int)d <= remainder)
                     {
                         var coinToRemove = coins.Where(x => x.CoinEnumeral == d).FirstOrDefault();
@@ -158,9 +153,8 @@ namespace Vend.Lib
                         }
                         else
                         {
-                            if (counter > 1)
+                            if (d==Denomination.NICKEL)
                                 return false;
-                            counter++;
                             break;
                         }
                         if (coins.Count == 0)
